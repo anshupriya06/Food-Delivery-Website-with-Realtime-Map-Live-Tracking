@@ -15,7 +15,7 @@ app.use(cors({
 }));
 app.use(express.json()); //middleware
 app.use(cookieParser());
-app.use('/api/auth', authRouter)
+app.use('/api/v1/auth', authRouter)
 
 
 app.listen(PORT, () => {
