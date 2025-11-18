@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { serverUrl } from '../App';
 import { auth } from '../../firebase';
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import{ ClipLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../redux/userSlice.js';
 
 function SignUp() {
     const primaryColor = "#ff4d2d";
@@ -22,7 +24,8 @@ function SignUp() {
     const [password, setPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
-    
+
+    const dispatch = useDispatch();
 
     const handleSignUp = async () => {
         setLoading(true);
@@ -32,7 +35,7 @@ function SignUp() {
                 fullName, email, mobile, password, role
             },
                 { withCredentials: true });
-            console.log(result);
+            dispatch(setUserData(result.data));
             setError("")
             setLoading(false);
             navigate('/signin');
@@ -45,7 +48,7 @@ function SignUp() {
 
         const handleGoogleAuth = async () => {
             if (!mobile) {
-                return setError("Mobile number is requierd.")
+                return setError("Mobile number is required.")
             }
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
@@ -56,7 +59,7 @@ function SignUp() {
                     mobile,
                     role
                 }, { withCredentials: true });
-                console.log(data);
+                dispatch(setUserData(data));
             } catch (error) {
                 setError(error?.response?.data?.message || error.message);
             }
@@ -68,7 +71,7 @@ function SignUp() {
             <div className='min-h-screen w-full flex items-center justify-center p-4' style=
                 {{ backgroundColor: bgColor }}>
                 <div className={`bg-white rounded-xl shadow-lg w-full max-w-md p-8 border `}
-                    style={{ border: `1px solid${borderColor}` }}>
+                    style={{ border: `1px solid ${borderColor}` }}>
 
                     <h1 className="text-3xl font-bold mb-2" style={{ color: primaryColor }}>Tathastu</h1>
                     <p className='text-gray-600 mb-8'>Create your account to get started with delicious food deiveries</p>
@@ -82,7 +85,7 @@ function SignUp() {
                             name="fullName"
                             placeholder="Enter your full name"
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none "
-                            style={{ border: `1px solid${borderColor}` }}
+                            style={{ border: `1px solid ${borderColor}` }}
                             onChange={(e) => setFullName(e.target.value)}
                             value={fullName}
                             required />
@@ -97,7 +100,7 @@ function SignUp() {
                             name="email"
                             placeholder="Enter your email"
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none "
-                            style={{ border: `1px solid${borderColor}` }}
+                            style={{ border: `1px solid ${borderColor}` }}
                             onChange={(e) => setEmail(e.target.value)}
                             value={email}
                             required />
@@ -113,7 +116,7 @@ function SignUp() {
                             placeholder="Enter your mobile number"
                             pattern="[0-9]{10}" // Basic pattern for 10 digits
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none"
-                            style={{ border: `1px solid${borderColor}` }}
+                            style={{ border: `1px solid ${borderColor}` }}
                             onChange={(e) => setMobile(e.target.value)}
                             value={mobile}
                             required />
@@ -130,7 +133,7 @@ function SignUp() {
                                 name="password"
                                 placeholder="Enter your password"
                                 className="w-full px-3 py-2 border rounded-lg focus:outline-none"
-                                style={{ border: `1px solid${borderColor}` }}
+                                style={{ border: `1px solid ${borderColor}` }}
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
                                 required />
@@ -144,10 +147,12 @@ function SignUp() {
                         <label htmlFor="role" className='block text-gray-700 font-medium mb-1'>Role</label>
                         <div className='flex gap-2'>
                             {['user', 'owner', 'deliveryBoy'].map((r) => (
-                                <button className='flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer'
+                                <button 
+                                    key={r}
+                                    className='flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer'
                                     onClick={() => setRole(r)}
                                     style={role === r ?
-                                        { backgroundColor: primaryColor, color: 'white', border: `1px solid${primaryColor}` } : { border: `1px solid${borderColor}`, color: 'black', backgroundColor: 'white' }}
+                                        { backgroundColor: primaryColor, color: 'white', border: `1px solid ${primaryColor}` } : { border: `1px solid ${borderColor}`, color: 'black', backgroundColor: 'white' }}
                                 >{r}</button>
                             ))}
                         </div>

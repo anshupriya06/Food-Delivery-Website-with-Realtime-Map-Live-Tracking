@@ -34,9 +34,8 @@ export const signUp = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict', // Use lowercase 'strict' for consistency
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax', 
     });
 
     return res.status(201).json(user);
@@ -54,7 +53,7 @@ export const signIn = async (req, res) => {
       return res.status(400).json({ message: 'User doesnot exists' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password); // Correctly compare password
+    const isMatch = await bcrypt.compare(password, user.password); 
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -63,8 +62,8 @@ export const signIn = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict', // Use lowercase 'strict' for consistency
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax', 
       maxAge: 30 * 24 * 60 * 60 * 1000
     });
 
@@ -77,7 +76,11 @@ export const signIn = async (req, res) => {
 
 export const signOut = async (req, res) => {
   try {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
     return res.status(200).json({ message: 'Logout successful' });
   } catch (error) {
     res.status(500).json({ message: `signOut error: ${error.message}` });
@@ -166,8 +169,8 @@ export const googleAuth = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production', // Only use secure in production
+      sameSite: 'lax', // Use 'lax' for better cross-site compatibility in development
       maxAge: 30 * 24 * 60 * 60 * 1000
     });
 

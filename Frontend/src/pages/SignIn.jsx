@@ -7,6 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { serverUrl } from '../App';
 import { auth } from '../../firebase';
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { setUserData } from '../redux/userSlice.js';
+import { useDispatch } from 'react-redux';
+import { ClipLoader } from 'react-spinners';
+
 
 function SignIn() {
     const primaryColor = "#ff4d2d";
@@ -18,6 +22,8 @@ function SignIn() {
     const [password, setPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
+    const dispatch = useDispatch();
+    
 
     const handleSignIn = async () => {
         setLoading(true);
@@ -27,7 +33,7 @@ function SignIn() {
                 email, password
             },
                 { withCredentials: true });
-            console.log(result);
+                dispatch(setUserData(result));
             setError("")
             setLoading(false);
             navigate('/');
@@ -39,18 +45,22 @@ function SignIn() {
     }
 
     const handleGoogleAuth = async () => {
-
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
+        setLoading(true);
+        setError(null);
         try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
             const { data } = await axios.post(`${serverUrl}/api/v1/auth/google-auth`, {
                 email: result.user.email,
             }, { withCredentials: true });
-            console.log(data);
+            dispatch(setUserData(data));
+            setError("");
+            setLoading(false);
+            navigate('/');
         } catch (error) {
-            console.log(error);
+            setError(error?.response?.data?.message || error.message);
+            setLoading(false);
         }
-
     }
 
     return (
@@ -107,11 +117,8 @@ function SignIn() {
                     style={{ backgroundColor: primaryColor, color: 'white' }}>
                     {loading ? <ClipLoader size={20} color='white'/> : 'Sign In'}</button>
 
-                {error && <p className='text-red-500 text-center my-[10px]' >*{error}</p>}
-
-
-                <button className='w-full mt-4 cursor-pointer flex items-center justify-center gap-2  border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100' onClick={handleGoogleAuth}>
-                    <FcGoogle size={20} /><span>Sign In with Google</span></button>
+                <button className='w-full mt-4 cursor-pointer flex items-center justify-center gap-2  border rounded-lg px-4 py-2 transition duration-200 border-gray-400 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed' onClick={handleGoogleAuth} disabled={loading}>
+                    {loading ? <ClipLoader size={20} color='#666'/> : <><FcGoogle size={20} /><span>Sign In with Google</span></>}</button>
                 <p className='text-center mt-2 cursor-pointer' onClick={() => navigate('/signup')}>Want to create an account? <span className='text-[#e64323]'>Sign Up</span></p>
             </div>
         </div>
