@@ -3,6 +3,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { serverUrl } from '../App';
+import { ClipLoader } from 'react-spinners';
 
 export default function ForgotPassword() {
     const primaryColor = "#ff4d2d";
@@ -14,7 +15,7 @@ export default function ForgotPassword() {
     const [newPassword, setNewPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
     const [error, setError] = React.useState(null);
-    const [Loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const handleSendOtp = async() => {
         setError(null);
@@ -93,7 +94,7 @@ export default function ForgotPassword() {
                         </div>
                         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                         <button className='w-full font-semibold rounded-lg  py-2 transition duration-200 text-white hover:bg-[#e64323] cursor-pointer' onClick={() => handleSendOtp()}  style={{ backgroundColor: primaryColor, color: 'white' }}
-                            disabled={Loading}>{Loading} ?< ClipLoader size={20} color='white'/>: "Send OTP"</button>
+                            disabled={loading}>{loading ? <ClipLoader size={20} color='white'/> : "Send OTP"}</button>
                         <p className='text-red-500 text-center my-[10px]' >*{error}</p>
                     </div>
                 )}
@@ -102,7 +103,7 @@ export default function ForgotPassword() {
                         <div className='mb-6'>
                             <label htmlFor="email" className='block text-gray-700 font-medium mb-1'>OTP</label>
                             <input
-                                type="text" id="opt"
+                                type="text" id="otp"
                                 name="otp"
                                 placeholder="Enter OTP"
                                 className="w-full px-3 py-2 border-[1px] border-gray-200 rounded-lg focus:outline-none "
@@ -112,7 +113,7 @@ export default function ForgotPassword() {
                         </div>
                         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                         <button className='w-full font-semibold rounded-lg  py-2 transition duration-200 text-white hover:bg-[#e64323] cursor-pointer' onClick={handleVerifyOtp} style={{ backgroundColor: primaryColor, color: 'white' }}>
-                            {Loading ? <ClipLoader size={20} color='white'/> : "Verify"}</button>
+                            {loading ? <ClipLoader size={20} color='white'/> : "Verify"}</button>
                             
                         <p className='text-red-500 text-center my-[10px]' >*{error}</p>
                     </div>
@@ -142,7 +143,7 @@ export default function ForgotPassword() {
                         </div>
                         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                         <button className='w-full font-semibold rounded-lg  py-2 transition duration-200 text-white hover:bg-[#e64323] cursor-pointer' onClick={() => handleResetPassword()} style={{ backgroundColor: primaryColor, color: 'white' }}>
-                            {Loading ? <ClipLoader size={20} color='white'/> : "Reset Password"}
+                            {loading ? <ClipLoader size={20} color='white'/> : "Reset Password"}
                         </button>
                         <p className='text-red-500 text-center my-[10px]' >*{error}</p>
                     </div>
