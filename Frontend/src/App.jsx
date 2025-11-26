@@ -14,7 +14,9 @@ function App() {
   useGetCurrentUser();
   useGetCity();
   
-  const { userData } = useSelector((state) => state.user);
+  const { userData, isLoading } = useSelector((state) => state.user);
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Routes>
