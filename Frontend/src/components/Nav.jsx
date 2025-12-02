@@ -9,12 +9,14 @@ import { setUserData } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 import { FaPlus } from "react-icons/fa6"
 import { TbReceiptRupee } from "react-icons/tb";
+import { useNavigate } from 'react-router-dom';
 
 
 const serverUrl = import.meta.env.VITE_SERVERURL;
 
 function Nav() {
     const { userData, currentCity } = useSelector((state) => state.user);
+    const navigate = useNavigate();
     const { myShopData } = useSelector((state) => state.owner);
     const userInitial = userData?.fullName?.charAt(0)?.toUpperCase() ?? '';
     const [popup, setPopup] = React.useState(false);
@@ -87,12 +89,12 @@ function Nav() {
                     {/* Add food item for owner dash board */}
                     {userData.role == "owner" ? <> <div className='cursor-pointer'>
                         {myShopData && <>
-                        <button className='hidden md:flex items-center p-2 gap-1 rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium text-sm'>
+                        <button className='hidden md:flex items-center p-2 gap-1 rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium text-sm cursor-pointer' onClick={() => navigate("/add-item")}>
                             <FaPlus size={20} />
                             <span>Add Food Item</span>
                         </button>
 
-                        <button className='md:hidden flex items-center p-2 rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium text-sm'>
+                        <button className='md:hidden flex items-center p-2 rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium text-sm cursor-pointer'  onClick={() => navigate("/add-item")}>
                             <FaPlus size={20} />
                         </button>
                         </>}
@@ -135,7 +137,8 @@ function Nav() {
 
                     {popup && <div className='fixed top-[80px] right-[10px] md:right-[10%] lg:right-[25%] w-[180px] bg-white shadow-2xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]'>
                         <div className='font-semibold text-[17px] text-gray-700'>{userData?.fullName}</div>
-                        <div className='md:hidden font-semibold text-[17px] text-gray-700 cursor-pointer'>My Orders</div>
+                        {userData.role == "user" && <div className='md:hidden font-semibold text-[17px] text-gray-700 cursor-pointer'>My Orders</div>}
+                        
                         <div className='font-semibold text-[17px] text-[#ff4d2d] cursor-pointer' onClick={handleLogout}>Logout</div>
                     </div>
                     }

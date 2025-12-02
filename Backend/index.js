@@ -22,6 +22,7 @@ app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/shop', shopRouter);
 app.use('/api/v1/item', itemRouter);
+app.use('/api/item', itemRouter); 
 
 
 

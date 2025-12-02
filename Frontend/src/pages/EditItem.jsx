@@ -1,44 +1,37 @@
 import React from 'react'
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FaUtensils } from "react-icons/fa";
-import { useState } from 'react';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { setMyShopData } from '../redux/ownerSlice';
 import { ClipLoader } from 'react-spinners';
-function AddItem() {
+
+function EditItem() {
     const navigate = useNavigate()
-    const { myShopData } = useSelector(state => state.owner)
-    const [loading,setLoading]=useState(false)
+    const { itemId } = useParams()
+    const dispatch = useDispatch()
+    const [currentItem, setCurrentItem] = useState(null)
+    const [loading, setLoading] = useState(true)
     const [name, setName] = useState("")
     const [price, setPrice] = useState(0)
     const [frontendImage, setFrontendImage] = useState(null)
     const [backendImage, setBackendImage] = useState(null)
     const [category, setCategory] = useState("")
     const [foodType, setFoodType] = useState("Veg")
-    const categories = [
-        "Beverages", 
-        "Snacks", 
+    const categories = ["Snacks",
+        "Main Course",
         "Desserts",
-        "Salads",
-        "Soups",
-        "Pasta",
         "Pizza",
         "Burgers",
         "Sandwiches",
-        "Wraps",
-        "Fries",
-        "Rice Dishes",
-        "Seafood",
-        "Grilled Items",
-        "Sushi",
-        "Tacos",
-        "Others"
-    ]
-    const dispatch = useDispatch()
+        "South Indian",
+        "North Indian",
+        "Chinese",
+        "Fast Food",
+        "Others"]
     const handleImage = (e) => {
         const file = e.target.files[0]
         setBackendImage(file)
@@ -53,20 +46,44 @@ function AddItem() {
             formData.append("name", name)
             formData.append("category", category)
             formData.append("foodType", foodType)
-            formData.append("price", Number(price))
+            formData.append("price", price)
             if (backendImage) {
                 formData.append("image", backendImage)
             }
-            const result = await axios.post(`${serverUrl}/api/item/add-item`, formData, { withCredentials: true })
-            dispatch(setMyShopData(result.data))
-            console.log(result.data)
-           setLoading(false)
-           navigate("/")
+            const result = await axios.post(`${serverUrl}/api/item/edit-item/${itemId}`, formData, { withCredentials: true })
+            // Fetch updated shop data after editing
+            const shopResult = await axios.get(`${serverUrl}/api/v1/shop/get-my`, { withCredentials: true })
+            dispatch(setMyShopData(shopResult.data))
+            setLoading(false)
+            navigate("/")
         } catch (error) {
             console.log(error)
             setLoading(false)
         }
     }
+    useEffect(() => {
+        const fetchItemById = async () => {
+            try {
+                setLoading(true)
+                const result = await axios.get(`${serverUrl}/api/item/get-item/${itemId}`, { withCredentials: true })
+                const item = result.data
+                setCurrentItem(item)
+                setName(item.name || "")
+                setPrice(item.price || 0)
+                setFrontendImage(item.image || null)
+                setCategory(item.category || "")
+                setFoodType(item.foodType || "Veg")
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (itemId) {
+            fetchItemById();
+        }
+    }, [itemId]);
+
     return (
         <div className='flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen'>
             <div className='absolute top-[20px] left-[20px] z-[10] mb-[10px]' onClick={() => navigate("/")}>
@@ -79,7 +96,7 @@ function AddItem() {
                         <FaUtensils className='text-[#ff4d2d] w-16 h-16' />
                     </div>
                     <div className="text-3xl font-extrabold text-gray-900">
-                        Add Food
+                        Edit Food
                     </div>
                 </div>
                 <form className='space-y-5' onSubmit={handleSubmit}>
@@ -125,7 +142,7 @@ function AddItem() {
                             onChange={(e) => setFoodType(e.target.value)}
                             value={foodType}
 
-                            >
+                        >
                             <option value="Veg">Veg</option>
                             <option value="Non-Veg">Non-Veg</option>
                         </select>
@@ -143,4 +160,4 @@ function AddItem() {
     )
 }
 
-export default AddItem
+export default EditItem
