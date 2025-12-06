@@ -47,6 +47,18 @@ function AddItem() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        
+        // Validate required fields
+        if (!name || !category || !price || !backendImage) {
+            alert('Please fill in all fields and select an image')
+            return
+        }
+
+        if (Number(price) <= 0) {
+            alert('Price must be greater than 0')
+            return
+        }
+
         setLoading(true)
         try {
             const formData = new FormData()
@@ -57,13 +69,21 @@ function AddItem() {
             if (backendImage) {
                 formData.append("image", backendImage)
             }
-            const result = await axios.post(`${serverUrl}/api/item/add-item`, formData, { withCredentials: true })
+            const result = await axios.post(`${serverUrl}/api/v1/item/add-item`, formData, { 
+                withCredentials: true
+            })
             dispatch(setMyShopData(result.data))
             console.log(result.data)
            setLoading(false)
            navigate("/")
         } catch (error) {
-            console.log(error)
+            console.error('Add item error:', error)
+            if (error.response) {
+                console.error('Error response:', error.response.data)
+                alert(error.response.data?.message || 'Failed to add item. Please try again.')
+            } else {
+                alert('Network error. Please check your connection.')
+            }
             setLoading(false)
         }
     }

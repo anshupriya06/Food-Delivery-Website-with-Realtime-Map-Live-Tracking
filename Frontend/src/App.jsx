@@ -8,6 +8,8 @@ import useGetCurrentUser from './hooks/useGetCurrentUser'
 import { useSelector } from 'react-redux'
 import useGetCity from './hooks/useGetCity'
 import useGetMyShop from './hooks/useGetMyShop'
+import useGetShopByCity from './hooks/useGetShopByCity'
+import useGetItemsByCity from './hooks/useGetItemByCity'
 import CreateEditShop from './pages/CreateEditShop'
 import AddItem from './pages/AddItem'
 import EditItem from './pages/EditItem'
@@ -18,6 +20,8 @@ function App() {
   useGetCurrentUser();
   useGetCity();
   useGetMyShop();
+  useGetShopByCity();
+  useGetItemsByCity();
   
   const { userData, isLoading } = useSelector((state) => state.user);
 

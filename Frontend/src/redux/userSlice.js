@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 const userSlice = createSlice({
     name: 'user',
     
@@ -10,6 +9,8 @@ const userSlice = createSlice({
         currentState: null,
         currentAddress: null,
         isLoading: true,
+        shopInMyCity: null,
+        itemsInMyCity: null,
     },
     reducers: {
         setUserData: (state, action) => {
@@ -26,9 +27,15 @@ const userSlice = createSlice({
         },
         setCurrentAddress: (state, action) => {
             state.currentAddress = action.payload;
+        },
+        setShopsInMyCity: (state, action) => {
+            state.shopInMyCity = action.payload;
+        },
+        setItemsInMyCity: (state, action) => {
+            state.itemsInMyCity = action.payload;
         }
     }
 })
 
-export const { setUserData, setUserLoading, setCurrentCity, setCurrentState, setCurrentAddress } = userSlice.actions;
+export const { setUserData, setUserLoading, setCurrentCity, setCurrentState, setCurrentAddress, setShopsInMyCity, setItemsInMyCity} = userSlice.actions;
 export default userSlice.reducer;
