@@ -14,6 +14,7 @@ import CreateEditShop from './pages/CreateEditShop'
 import AddItem from './pages/AddItem'
 import EditItem from './pages/EditItem'
 import CartPage from './pages/CartPage'
+import CheckOut from './pages/CheckOut'
 
 export const serverUrl = import.meta.env.VITE_SERVERURL || "http://localhost:8000"
 
@@ -38,6 +39,7 @@ function App() {
       <Route path="/add-item" element={userData ? <AddItem/> : <Navigate to="/signin"/>}/>
       <Route path="/edit-item/:itemId" element={userData ? <EditItem/> : <Navigate to="/signin"/>}/>
       <Route path="/cart" element={userData ? <CartPage/> : <Navigate to="/signin"/>}/>
+      <Route path="/checkout" element={userData ? <CheckOut/> : <Navigate to="/signin"/>}/>
     </Routes>
   )
 }
