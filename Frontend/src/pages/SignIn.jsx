@@ -51,7 +51,10 @@ function SignIn() {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const { data } = await axios.post(`${serverUrl}/api/v1/auth/google-auth`, {
+                fullName: result.user.displayName || result.user.email.split('@')[0],
                 email: result.user.email,
+                mobile: result.user.phoneNumber || '0000000000',
+                role: 'user'
             }, { withCredentials: true });
             dispatch(setUserData(data));
             setError("");

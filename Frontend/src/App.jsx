@@ -13,8 +13,9 @@ import useGetItemsByCity from './hooks/useGetItemByCity'
 import CreateEditShop from './pages/CreateEditShop'
 import AddItem from './pages/AddItem'
 import EditItem from './pages/EditItem'
+import CartPage from './pages/CartPage'
 
-export const serverUrl = "http://localhost:5000"
+export const serverUrl = import.meta.env.VITE_SERVERURL || "http://localhost:8000"
 
 function App() {
   useGetCurrentUser();
@@ -36,6 +37,7 @@ function App() {
       <Route path="/create-edit-shop" element={userData ? <CreateEditShop/> : <Navigate to="/signin"/>}/>
       <Route path="/add-item" element={userData ? <AddItem/> : <Navigate to="/signin"/>}/>
       <Route path="/edit-item/:itemId" element={userData ? <EditItem/> : <Navigate to="/signin"/>}/>
+      <Route path="/cart" element={userData ? <CartPage/> : <Navigate to="/signin"/>}/>
     </Routes>
   )
 }

@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 const serverUrl = import.meta.env.VITE_SERVERURL;
 
 function Nav() {
-    const { userData, currentCity } = useSelector((state) => state.user);
+    const { userData, currentCity, cartItems } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const { myShopData } = useSelector((state) => state.owner);
     const userInitial = userData?.fullName?.charAt(0)?.toUpperCase() ?? '';
@@ -116,9 +116,9 @@ function Nav() {
                         <>
 
                             {/* Cart */}
-                            {userData.role == "user" && <div className='relative cursor-pointer'>
+                            {userData.role == "user" && <div className='relative cursor-pointer' onClick={()=> navigate("/cart")}>
                                 <FaCartShopping size={25} className='text-[#ff4d2d] cursor-pointer' />
-                                <span className='absolute top-[-12px] right-[-9px] text-[#ff4d2d]'>0</span>
+                                <span className='absolute top-[-12px] right-[-9px] text-[#ff4d2d]'>{cartItems.length}</span>
                             </div>}
 
                             {/* orders */}
