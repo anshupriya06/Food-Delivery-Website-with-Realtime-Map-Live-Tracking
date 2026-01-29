@@ -20,11 +20,22 @@ function CartPage() {
         {cartItems?.length === 0 ? (
           <p className='text-gray-500 text-lg text-center'>Your Cart is Empty</p>
         ):(
-          <div>
+          <>
+          <div className='space-y-4'>
             {cartItems.map((item, index) => (
               <CartItemCard key={index} {...item} />
             ))}
           </div>
+          <div className='mt-6 bg-white p-4 rounded-xl shadow flex justify-between items-center border'>
+              <h1 className='text-lg font-semibold'>Total Amount: </h1>
+              <span className='font-bold text-xl text-[#ff4d2d]'>₹ {useSelector(state => state.user.totalAmount)}</span>
+          </div>
+
+          <div className='mt-4 flex justify-end'>
+            <button className='bg-[#ff4d2d] text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-[#e64526] transition cursor-pointer'>
+              Proceed to Checkout</button>
+          </div>
+          </>
         )}
       </div>
 
